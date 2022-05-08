@@ -3,6 +3,7 @@ import { useState } from "react";
 import GlobalStyle from "../css/GlobalStyle.js";
 
 import Login from "./Login.js";
+import Register from "./Register.js"
 
 import UserContext from "./contexts/UserContext.js";
 
@@ -18,7 +19,8 @@ function App() {
             <BrowserRouter>
                 <UserContext.Provider value={contextValue}>
                     <Routes>
-                        <Route path="/" element={<Login />} />
+                        <Route path="/signin" element={<Login /> } />
+                        <Route path="/signup" element={ <Register /> } />
                     </Routes>
                 </UserContext.Provider>
             </BrowserRouter>

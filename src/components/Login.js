@@ -54,7 +54,7 @@ function Login() {
         <ContainerLogin>
             <h1>MyWallet</h1>
             {loadInputs}
-            <Link to='/signUp'> <p>Primeira vez? Cadastre-se!</p> </Link>
+            <Link to='/signup'> <p>Primeira vez? Cadastre-se!</p> </Link>
         </ContainerLogin>
     )
 }
