@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useContext } from "react";
 
 import UserContext from './contexts/UserContext.js';
@@ -9,36 +9,51 @@ import styled from 'styled-components';
 
 function NewEntry() {
 
-    const {setInserts} = useContext(UserContext)
-
+    const { type } = useParams();
+    const { token, setInserts, inserts } = useContext(UserContext)
     const [dataNewEntry, setDataNewEntry] = useState({value: "", description: ""})
 
-    console.log(dataNewEntry.description)
+    const navigate = useNavigate();
 
     const objNewEntry = {
         value: dataNewEntry.value,
-        description: dataNewEntry.description
+        description: dataNewEntry.description,
+        type: type
+    }
+
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
     }
 
     function postNewEntry(e){
         e.preventDefault()
 
-        const URLINSERT = "http://http://localhost:3000/inserts"
+        const URLINSERT = "http://localhost:5000/inserts"
 
-        const promise = axios.post(URLINSERT, objNewEntry);
+        const promise = axios.post(URLINSERT, objNewEntry, config);
+
+        console.log("ENTROUreq", token)
 
         promise.then(response => {
-            console.log(response.data)
+            const { data } = response
+            console.log("VEIODOBACK",response.data)
+            setInserts({...inserts, data })
+            navigate("/inserts")
+        })
+        promise.catch(err =>{
+            console.log(err)
         })
     }
 
         return (
             <ContainerNewEntry>
-                <h1>Nova Entrada</h1>
+                <h1>Nova {`${type === "income" ? "Entrada":"Saída"}`}</h1>
                 <form onSubmit={postNewEntry} >
                     <input type="text" placeholder="Valor" value={ dataNewEntry.value } onChange={ (e) => setDataNewEntry({...dataNewEntry, value: e.target.value})} />
                     <input type="text" placeholder="Descrição" value={ dataNewEntry.description } onChange={ (e) => setDataNewEntry({...dataNewEntry, description: e.target.value}) } />
-                    <button type='submit'>Salvar Entrada</button>
+                    <button type='submit'>Salvar {`${type === "income" ? "Entrada":"Saída"}`}</button>
                 </form>
             </ContainerNewEntry>
         )

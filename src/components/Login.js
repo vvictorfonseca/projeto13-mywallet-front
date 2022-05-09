@@ -10,42 +10,44 @@ import UserContext from './contexts/UserContext.js';
 
 function Login() {
 
-    const { setToken, setNameUser } = useContext(UserContext)
+    const { token, setToken, userData, setUserData, nameUser, setNameUser } = useContext(UserContext)
 
     const navigate = useNavigate();
-    
-    const [dataLogin, setDataLogin] = useState({ email: "", password: "" });
-
-    const objSignIn = {
-        email: dataLogin.email,
-        password: dataLogin.password
-    }
 
     function LoginUser(e){
         e.preventDefault()
 
-        const URLLOGIN = "http://http://localhost:3000/signin"
+        const objSignIn = {
+            email: userData.email,
+            password: userData.password
+        }
+
+        const URLLOGIN = "http://localhost:5000"
 
         const promise = axios.post(URLLOGIN, objSignIn);
 
-        promise.then(response => {
-            const { data } = response
+        promise.then(({ data }) => {
+            console.log("data", data)
             setToken(data.token);
             setNameUser(data.name)
+            setUserData({...userData, token:data.token})
             navigate("/inserts");
         })
         promise.catch(err => {
+            console.log(err)
             alert('Usuário inexiste ou usuário e senha incorretos!')
         });
     }
+
+    console.log("userdata", userData)
 
     const loadInputs = inputs()
 
     function inputs() {
         return (
             <form onSubmit={ LoginUser }>
-                <input type="email" placeholder="E-mail" value={ dataLogin.email } disabled={ false } onChange={ (e) => setDataLogin({...dataLogin, email: e.target.value })} ></input>
-                <input type="password" placeholder="Senha" value={ dataLogin.password } disabled={ false } onChange={ (e) => setDataLogin({...dataLogin, password: e.target.value})} ></input>
+                <input type="email" placeholder="E-mail" value={ userData.email } disabled={ false } onChange={ (e) => setUserData({...userData, email: e.target.value })} ></input>
+                <input type="password" placeholder="Senha" value={ userData.password } disabled={ false } onChange={ (e) => setUserData({...userData, password: e.target.value})} ></input>
                 <button type='submit'>Entrar</button>
             </form>
         )

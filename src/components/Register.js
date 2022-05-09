@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useContext } from "react";
 
+import UserContext from './contexts/UserContext.js';
+
 import axios from 'axios';
 import styled from 'styled-components';
 
@@ -10,28 +12,31 @@ function Register() {
 
     const navigate = useNavigate();
 
-    const [dataRegister, setDataRegister] = useState({ name: "", email: "", password: "", confirmPassword: "" })
+    const {userData, setUserData, setNameUser, nameUser } = useContext(UserContext)
 
     const objRegister = {
-        name: dataRegister.name,
-        email: dataRegister.email,
-        password: dataRegister.password,
-        confirmPassword: dataRegister.confirmPassword
+        name: userData.name,
+        email: userData.email,
+        password: userData.password,
+        confirmPassword: userData.confirmPassword
     }
 
     function newRegister(e) {
         e.preventDefault();
 
-        const URLREGISTER = "http://localhost:3000/signup"
+        const URLREGISTER = "http://localhost:5000/signup"
 
-        if (dataRegister.password === dataRegister.confirmPassword) {
+        if (userData.password === userData.confirmPassword) {
 
             const promise = axios.post(URLREGISTER, objRegister);
 
             promise.then(response => {
                 const { data } = response;
-                console.log(response)
-                navigate("/signin");
+                console.log(data)
+                setUserData({...userData, email: ""})
+                setUserData({...userData, password: ""})
+                setNameUser({...nameUser, name: userData.name})
+                navigate("/");
             })
             promise.catch(err => {
                 console.log(err)
@@ -40,15 +45,17 @@ function Register() {
         }
     }
 
+    console.log(nameUser)
+
     const loadInputs = inputs()
 
     function inputs() {
         return (
             <form onSubmit={newRegister}>
-                <input type="text" placeholder='Nome' value={dataRegister.name} onChange={(e) => setDataRegister({ ...dataRegister, name: e.target.value })} ></input>
-                <input type="email" placeholder='E-mail' value={dataRegister.email} onChange={(e) => setDataRegister({ ...dataRegister, email: e.target.value })} ></input>
-                <input type="password" placeholder='Senha' value={dataRegister.password} onChange={(e) => setDataRegister({ ...dataRegister, password: e.target.value })} ></input>
-                <input type="password" placeholder='Confirme a Senha' value={dataRegister.confirmPassword} onChange={(e) => setDataRegister({ ...dataRegister, confirmPassword: e.target.value })} ></input>
+                <input type="text" placeholder='Nome' value={userData.name} onChange={(e) => setUserData({ ...userData, name: e.target.value })} ></input>
+                <input type="email" placeholder='E-mail' value={userData.email} onChange={(e) => setUserData({ ...userData, email: e.target.value })} ></input>
+                <input type="password" placeholder='Senha' value={userData.password} onChange={(e) => setUserData({ ...userData, password: e.target.value })} ></input>
+                <input type="password" placeholder='Confirme a Senha' value={userData.confirmPassword} onChange={(e) => setUserData({ ...userData, confirmPassword: e.target.value })} ></input>
                 <button type='submit'>Cadastrar</button>
             </form>
         )
@@ -58,7 +65,7 @@ function Register() {
         <ContainerRegister>
             <h1>MyWallet</h1>
             {loadInputs}
-            <Link to='/signin'> <p>Já tem uma conta? Entre agora!</p> </Link>
+            <Link to='/'> <p>Já tem uma conta? Entre agora!</p> </Link>
         </ContainerRegister>
     )
 }

@@ -8,26 +8,21 @@ import axios from 'axios';
 import styled from 'styled-components';
 
 import NewEntry from './NewEntry.js';
-import NewExit from './NewExit.js';
 
 import UserContext from './contexts/UserContext.js';
 
 function Inserts() {
 
     const [inserts, setInserts] = useState([]);
-    const [newEntry, setNewEntry] = useState(false);
-    const [newExit, setNewExit] = useState(false)
 
-    const { nameUser, token } = useContext(UserContext);
-
-    console.log(nameUser)
+    const { token, nameUser, newEntry, setNewEntry, newExit, setNewExit } = useContext(UserContext);
 
     useEffect(() => {
 
-        const URL = "http://http://localhost:3000/inserts"
-        const config =  {
+        const URL = "http://localhost:5000/inserts"
+        const config = {
             headers: {
-                "Authorization": `Bearer ${ token }`
+                "Authorization": `Bearer ${token}`
             }
         }
 
@@ -35,6 +30,7 @@ function Inserts() {
         promise.then(response => {
             const { data } = response
             setInserts(data)
+            console.log("INSERTS", data)
         })
         promise.catch(err => {
             console.log(err)
@@ -42,37 +38,53 @@ function Inserts() {
 
     }, [])
 
-    if (inserts.length === 0 && newEntry === false && newExit === false) {
+    function UserInserts(props) {
+        const { info } = props
+        const colorIncome = '#03AC00';
+        const colorOutcome = '#C70000';
+
+        return (
+            <BoxTransaction color={info.type === "income" ? colorIncome: colorOutcome}>
+                <p>{info.time}</p>
+                <p>{info.description}</p>
+                <p>{info.value}</p>
+            </BoxTransaction>
+        )
+    }
+
+    if (newEntry === false && newExit === false) {
         return (
             <ContainerInserts>
-                <h1>Olá, Victor {nameUser}</h1>
+                <h1>Olá, {nameUser}</h1>
+                {
+                    inserts.length === 0 ? (
+                        <BoxInserts>
+                            <p>Não há registros de <br /> entrada ou saída</p>
+                        </BoxInserts>
+                    ) : (
+                        <BoxInserts>
+                            {inserts.map(insert => <UserInserts info={insert} />)}
+                        </BoxInserts>
+                    )}
 
-                <BoxInserts>
-                    <p>Não há registros de <br /> entrada ou saída</p>
-                </BoxInserts>
 
                 <BoxNewInserts>
                     <BoxNewEntrance>
-                        <ion-icon onClick={() => setNewEntry(true)} name="add-circle-outline"></ion-icon>
+                        <Link to='/inserts/income' style={{ textDecoration: 'none'}}>
+                        <ion-icon name="add-circle-outline"></ion-icon>
                         <p>Nova <br /> entrada</p>
+                        </Link>
                     </BoxNewEntrance>
                     <BoxNewExit>
-                        <ion-icon onClick={() => setNewExit(true)} name="remove-circle-outline"></ion-icon>
+                        <Link to='/inserts/outcome' style={{ textDecoration: 'none'}}>
+                        <ion-icon name="remove-circle-outline"></ion-icon>
                         <p>Nova <br /> saída</p>
+                        </Link>
                     </BoxNewExit>
                 </BoxNewInserts>
             </ContainerInserts>
         )
-    } else if (newEntry === true) {
-        return (
-            <NewEntry />
-        )
-    } else if (newExit === true) {
-        return (
-            <NewExit />
-        )
-    }
-
+    } 
 }
 
 const ContainerInserts = styled.div`
@@ -98,6 +110,8 @@ const BoxInserts = styled.div`
     margin: auto auto;
     margin-top: 22px;
     border-radius: 5px;
+    display:flex;
+    flex-direction: column;
 
     p{
         font-size:20px;
@@ -162,6 +176,43 @@ const BoxNewExit = styled.div`
         color: #FFFFFF;
         margin-left:9.56px;
         margin-top:70px;
+    }
+`
+const BoxTransaction = styled.div`
+    display:flex;
+    justify-content:space-between;
+    margin-top:15px;
+
+    p:first-child{
+        margin-left: 13px;
+        font-family: 'Raleway';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 19px;
+        color: #C6C6C6;
+    }
+
+    p:nth-child(2){
+        margin-left: 10px;
+        font-family: 'Raleway';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 19px;
+        color: #000000;
+    }
+
+    p:last-child{
+        margin-left: auto;
+        margin-right: 13px;
+        font-family: 'Raleway';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 19px;
+        text-align: right;
+        color: ${props => props.color};
     }
 `
 
