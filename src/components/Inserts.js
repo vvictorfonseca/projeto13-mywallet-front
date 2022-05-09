@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useContext } from "react";
+import { useEffect } from "react";
 
 import axios from 'axios';
 import styled from 'styled-components';
@@ -17,9 +18,29 @@ function Inserts() {
     const [newEntry, setNewEntry] = useState(false);
     const [newExit, setNewExit] = useState(false)
 
-    const { nameUser } = useContext(UserContext);
+    const { nameUser, token } = useContext(UserContext);
 
     console.log(nameUser)
+
+    useEffect(() => {
+
+        const URL = "http://http://localhost:3000/inserts"
+        const config =  {
+            headers: {
+                "Authorization": `Bearer ${ token }`
+            }
+        }
+
+        const promise = axios.get(URL, config)
+        promise.then(response => {
+            const { data } = response
+            setInserts(data)
+        })
+        promise.catch(err => {
+            console.log(err)
+        })
+
+    }, [])
 
     if (inserts.length === 0 && newEntry === false && newExit === false) {
         return (

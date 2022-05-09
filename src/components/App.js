@@ -12,9 +12,9 @@ function App() {
 
     const [token, setToken] = useState("");
     const [nameUser, setNameUser] = useState("");
-    const [newEntry, setNewEntry] = useState("")
+    const [inserts, setInserts] = useState([]);
 
-    const contextValue = { token, setToken, nameUser, setNameUser, newEntry, setNewEntry }
+    const contextValue = { token, setToken, nameUser, setNameUser,inserts, setInserts }
 
     return (
         <>
