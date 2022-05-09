@@ -10,7 +10,7 @@ import UserContext from './contexts/UserContext.js';
 
 function Login() {
 
-    const { setToken } = useContext(UserContext)
+    const { setToken, setNameUser } = useContext(UserContext)
 
     const navigate = useNavigate();
     
@@ -24,13 +24,14 @@ function Login() {
     function LoginUser(e){
         e.preventDefault()
 
-        const URLLOGIN = "https://http://localhost:3000/"
+        const URLLOGIN = "http://http://localhost:3000/signin"
 
         const promise = axios.post(URLLOGIN, objSignIn);
 
-        promise.the(response => {
+        promise.then(response => {
             const { data } = response
             setToken(data.token);
+            setNameUser(data.name)
             navigate("/inserts");
         })
         promise.catch(err => {

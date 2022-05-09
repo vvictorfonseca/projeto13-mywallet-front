@@ -4,14 +4,17 @@ import GlobalStyle from "../css/GlobalStyle.js";
 
 import Login from "./Login.js";
 import Register from "./Register.js"
+import Inserts from "./Inserts.js";
 
 import UserContext from "./contexts/UserContext.js";
 
 function App() {
 
     const [token, setToken] = useState("");
+    const [nameUser, setNameUser] = useState("");
+    const [newEntry, setNewEntry] = useState("")
 
-    const contextValue = { token, setToken }
+    const contextValue = { token, setToken, nameUser, setNameUser, newEntry, setNewEntry }
 
     return (
         <>
@@ -21,6 +24,7 @@ function App() {
                     <Routes>
                         <Route path="/signin" element={<Login /> } />
                         <Route path="/signup" element={ <Register /> } />
+                        <Route path="/inserts" element={ <Inserts />} />
                     </Routes>
                 </UserContext.Provider>
             </BrowserRouter>

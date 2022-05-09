@@ -16,13 +16,13 @@ function Register() {
         name: dataRegister.name,
         email: dataRegister.email,
         password: dataRegister.password,
-        confirmPassword: dataRegister.password
+        confirmPassword: dataRegister.confirmPassword
     }
 
     function newRegister(e) {
         e.preventDefault();
 
-        const URLREGISTER = "https://http://localhost:3000/signup"
+        const URLREGISTER = "http://localhost:3000/signup"
 
         if (dataRegister.password === dataRegister.confirmPassword) {
 
