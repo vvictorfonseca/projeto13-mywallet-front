@@ -32,7 +32,6 @@ function Register() {
 
             promise.then(response => {
                 const { data } = response;
-                console.log(data)
                 setUserData({...userData, email: ""})
                 setUserData({...userData, password: ""})
                 setNameUser({...nameUser, name: userData.name})
@@ -44,8 +43,6 @@ function Register() {
             });
         }
     }
-
-    console.log(nameUser)
 
     const loadInputs = inputs()
 
@@ -65,7 +62,7 @@ function Register() {
         <ContainerRegister>
             <h1>MyWallet</h1>
             {loadInputs}
-            <Link to='/'> <p>Já tem uma conta? Entre agora!</p> </Link>
+            <Link to='/' style={{ textDecoration: 'none'}}> <p>Já tem uma conta? Entre agora!</p> </Link>
         </ContainerRegister>
     )
 }

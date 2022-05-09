@@ -27,7 +27,6 @@ function Login() {
         const promise = axios.post(URLLOGIN, objSignIn);
 
         promise.then(({ data }) => {
-            console.log("data", data)
             setToken(data.token);
             setNameUser(data.name)
             setUserData({...userData, token:data.token})
@@ -38,8 +37,6 @@ function Login() {
             alert('Usuário inexiste ou usuário e senha incorretos!')
         });
     }
-
-    console.log("userdata", userData)
 
     const loadInputs = inputs()
 
@@ -57,7 +54,7 @@ function Login() {
         <ContainerLogin>
             <h1>MyWallet</h1>
             {loadInputs}
-            <Link to='/signup'> <p>Primeira vez? Cadastre-se!</p> </Link>
+            <Link to='/signup' style={{ textDecoration: 'none'}}> <p>Primeira vez? Cadastre-se!</p> </Link>
         </ContainerLogin>
     )
 }

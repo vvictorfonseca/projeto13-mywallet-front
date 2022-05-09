@@ -34,11 +34,8 @@ function NewEntry() {
 
         const promise = axios.post(URLINSERT, objNewEntry, config);
 
-        console.log("ENTROUreq", token)
-
         promise.then(response => {
             const { data } = response
-            console.log("VEIODOBACK",response.data)
             setInserts({...inserts, data })
             navigate("/inserts")
         })
@@ -51,7 +48,7 @@ function NewEntry() {
             <ContainerNewEntry>
                 <h1>Nova {`${type === "income" ? "Entrada":"Saída"}`}</h1>
                 <form onSubmit={postNewEntry} >
-                    <input type="text" placeholder="Valor" value={ dataNewEntry.value } onChange={ (e) => setDataNewEntry({...dataNewEntry, value: e.target.value})} />
+                    <input type="text" placeholder="Valor (ex: 50,50)" value={ dataNewEntry.value } onChange={ (e) => setDataNewEntry({...dataNewEntry, value: e.target.value})} />
                     <input type="text" placeholder="Descrição" value={ dataNewEntry.description } onChange={ (e) => setDataNewEntry({...dataNewEntry, description: e.target.value}) } />
                     <button type='submit'>Salvar {`${type === "income" ? "Entrada":"Saída"}`}</button>
                 </form>

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useContext } from "react";
@@ -13,9 +13,11 @@ import UserContext from './contexts/UserContext.js';
 
 function Inserts() {
 
+    const navigate = useNavigate();
+
     const [inserts, setInserts] = useState([]);
 
-    const { token, nameUser, newEntry, setNewEntry, newExit, setNewExit } = useContext(UserContext);
+    const { token, setToken, nameUser, newEntry, setNewEntry, newExit, setNewExit, userData, setUserData } = useContext(UserContext);
 
     useEffect(() => {
 
@@ -30,7 +32,6 @@ function Inserts() {
         promise.then(response => {
             const { data } = response
             setInserts(data)
-            console.log("INSERTS", data)
         })
         promise.catch(err => {
             console.log(err)
@@ -52,10 +53,40 @@ function Inserts() {
         )
     }
 
+    function FooterBalance(){
+
+        const colorIncome = '#03AC00';
+        const colorOutcome = '#C70000';
+
+        let total = 0;
+        inserts.forEach((insert) => {
+            insert.type === "income" ? 
+            total += parseInt(insert.value)
+            :
+            total -= parseInt(insert.value)
+        })
+        
+        return(
+            <Footer color={total > 0 ? colorIncome : colorOutcome}>
+                <p>Saldo</p>
+                <p>{total}</p>
+            </Footer>
+        )
+    }
+
     if (newEntry === false && newExit === false) {
         return (
             <ContainerInserts>
+                <Header>
                 <h1>Olá, {nameUser}</h1>
+                
+                <ion-icon onClick={ () => {
+                    setUserData({...userData, token: ""})
+                    navigate("/")
+
+                }} name="log-out-outline"></ion-icon>
+                
+                </Header>
                 {
                     inserts.length === 0 ? (
                         <BoxInserts>
@@ -64,6 +95,9 @@ function Inserts() {
                     ) : (
                         <BoxInserts>
                             {inserts.map(insert => <UserInserts info={insert} />)}
+                            <Footer>
+                            < FooterBalance />
+                            </Footer>
                         </BoxInserts>
                     )}
 
@@ -94,6 +128,12 @@ const ContainerInserts = styled.div`
     justify-content: center;
     flex-direction: column;
 
+`
+const Header = styled.div`
+    display:flex;
+    justify-content: space-between;
+    width: 375px;
+
     h1 {
         font-size: 26px;
         font-weight: 700;
@@ -101,7 +141,17 @@ const ContainerInserts = styled.div`
         margin-left:24px;
         color: #FFFFFF;
     }
+
+    ion-icon{
+        font-size: 33px;
+        color:white;
+        cursor:pointer;
+        margin-top:21px;
+        margin-right:24px;
+        position:relative;
+    }
 `
+
 const BoxInserts = styled.div`
     width:326px;
     height:446px;
@@ -112,6 +162,7 @@ const BoxInserts = styled.div`
     border-radius: 5px;
     display:flex;
     flex-direction: column;
+    position: relative;
 
     p{
         font-size:20px;
@@ -213,6 +264,42 @@ const BoxTransaction = styled.div`
         line-height: 19px;
         text-align: right;
         color: ${props => props.color};
+    }
+`
+const Footer = styled.div`
+
+    display: flex;
+    justify-content: space-between;
+    width: 326px;
+    height: 40px;
+    background-color: white;
+    border-radius: 0 0 5px 5px;
+    position:fixed;
+    bottom: 0;
+    position:absolute;
+
+    p:first-child{
+        margin-left: 13px;
+        margin-right: 13px;
+        margin-top: 13px;
+        font-family: 'Raleway';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 17px;
+        line-height: 20px;
+        color: #000000;
+    }
+
+    p:last-child{
+        font-style: normal;
+        font-weight: 400;
+        font-size: 17px;
+        line-height: 20px;
+        position: absolute;
+        right:0;
+        margin-top: 13px;
+        margin-right:11px;
+        color: ${props => props.color}
     }
 `
 
